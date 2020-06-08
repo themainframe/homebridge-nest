@@ -108,7 +108,18 @@ class NestPlatform {
 
         const handleUpdates = function(data) {
             if (Object.keys(this.accessoryLookup).length > 0) {
+            
+                // Hacky as heck, but if we have an updateCallback configured, POST this data out too
+                if (this.config.updateCallback) {
+                    this.log.info('POSTing new data to callback URL ' + this.config.updateCallback);
+                    axios.post(this.config.updateCallback, {
+                        nest_data: data
+                    }).catch(() => { });
+                }
+
+                // Update our accessories list
                 updateAccessories(data, this.accessoryLookup);
+            
             }
         }.bind(this);
 
